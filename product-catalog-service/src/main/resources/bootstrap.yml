@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: product-catalog-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
