@@ -22,6 +22,6 @@ public class Price implements Serializable {
     @Version
     private Long version;
 
-    private List<ProductsInPriceList> productsInPriceLists;
+    private List<ProductsInPriceList> productsInPriceList;
 
 }
