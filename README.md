@@ -5,6 +5,9 @@
 
 ## Tech stack 
 + Microservices 
+    + Spring cloud config server
+    + Eureka server 
+    + Messaging: RabbitMQ 
 + Spring boot 
 + Spring data 
 + Spring cloud 

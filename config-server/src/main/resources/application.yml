@@ -1,0 +1,19 @@
+# Http server port
+server:
+  port: 8888
+
+management:
+  security:
+    enabled: false
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: file://${LOCAL_REPO}
+        git:
+#          uri: file://${GIT_LOCAL_REPO}
+           uri: https://github.com/HienNguyen711/warehouse-microservice
