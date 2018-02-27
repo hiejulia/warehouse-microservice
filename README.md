@@ -10,7 +10,7 @@
 + Spring cloud 
 + Messaging 
 + Container: Docker 
-+ Database: 
++ Database: MySQL, MongoDB 
 
 
 ## Service 
