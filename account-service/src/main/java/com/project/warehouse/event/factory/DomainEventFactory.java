@@ -3,6 +3,7 @@ package com.project.warehouse.event.factory;
 import com.datastax.driver.core.utils.UUIDs;
 
 import com.project.warehouse.event.model.*;
+import com.project.warehouse.security.SecurityUtils;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Component
 public class DomainEventFactory {
 
+    // autowired: SecurityUtils
     @Autowired
     private SecurityUtils securityUtils;
 

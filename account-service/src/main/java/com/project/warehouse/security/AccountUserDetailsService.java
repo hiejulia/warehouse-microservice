@@ -1,6 +1,7 @@
 package com.project.warehouse.security;
 
 
+import com.project.warehouse.repository.AccountRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
