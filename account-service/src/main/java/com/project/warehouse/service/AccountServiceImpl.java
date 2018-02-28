@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = true) // @Transactional : readOnly = true 
+    @Transactional(readOnly = true) // @Transactional : readOnly = true
     public List<Account> findAccountList() {
         return accountRepository.findAll();
     }
