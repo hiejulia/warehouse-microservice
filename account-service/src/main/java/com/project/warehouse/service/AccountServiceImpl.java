@@ -5,8 +5,12 @@ import com.project.warehouse.event.model.AccountNotFoundEvent;
 import com.project.warehouse.event.model.RemoveAccountErrorEvent;
 import com.project.warehouse.event.model.SaveAccountErrorEvent;
 import com.project.warehouse.event.service.EventDomainPubblishService;
+import com.project.warehouse.exception.ConflictSaveAccountException;
+import com.project.warehouse.exception.RemoveAccountException;
+import com.project.warehouse.exception.SaveAccountException;
 import com.project.warehouse.model.Account;
 import com.project.warehouse.repository.AccountRepository;
+import com.project.warehouse.validator.AccountDataValidationService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,7 +129,8 @@ public class AccountServiceImpl implements AccountService {
 
         Function<String, AccountNotFoundException> f = userNameAux -> {
             AccountNotFoundEvent accountNotFoundEvent = eventDomainPubblishService.publishAccountNotFoundEvent(correlationId, userNameAux);
-            return new AccountNotFoundException(accountNotFoundEvent, AccountNotFoundException.DEFAULT_MESSAGE);
+//            return new AccountNotFoundException(accountNotFoundEvent, AccountNotFoundException.DEFAULT_MESSAGE);
+            return null;
         };
 
         try{
@@ -134,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
                 throw f.apply(userName);
             }
         } catch (Exception e){
-            throw f.apply(userName);
+//            throw f.apply(userName);
         }
     }
 
