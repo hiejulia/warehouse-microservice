@@ -24,6 +24,11 @@
             CREATE KEYSPACE purchaseOrderEventKeyspace WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};`
 
 
+
+
++ Zipkin-server 
+    
+
 ## How to run 
 
 
