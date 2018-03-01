@@ -1,0 +1,15 @@
+spring: # spring config
+  application:
+    name: zipkin-server
+  cloud:
+    config:
+      discovery:
+        enabled: true
+  zipkin: # zipkin config
+    locator:
+      discovery:
+        enabled: true
+
+management:
+  security:
+    enabled: false
