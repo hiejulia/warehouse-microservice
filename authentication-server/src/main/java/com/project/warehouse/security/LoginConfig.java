@@ -14,9 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Order(-20)
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
+    // autowired : authenticationManager
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    //config
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
