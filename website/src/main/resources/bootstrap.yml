@@ -1,0 +1,8 @@
+# Spring config
+spring:
+  application:
+    name: website
+  cloud:
+    config:
+      discovery:
+        enabled: true
