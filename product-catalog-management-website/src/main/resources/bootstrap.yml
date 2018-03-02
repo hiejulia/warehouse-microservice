@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: product-catalog-management-website
+  cloud:
+   config:
+     discovery:
+       enabled: true
