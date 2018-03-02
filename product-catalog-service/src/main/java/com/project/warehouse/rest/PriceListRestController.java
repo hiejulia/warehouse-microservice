@@ -3,6 +3,8 @@ package com.project.warehouse.rest;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
+import com.project.warehouse.hateoas.PriceListHateoasFactory;
+import com.project.warehouse.model.PriceList;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,7 @@ import java.math.BigDecimal;
         private PriceListHateoasFactory priceListHateoasFactory;
 
         @Autowired
-        private GoodsInPriceListHeateoasFactory goodsInPriceListHeateoasFactory;
+        private ProductsInPriceListHeateoasFactory goodsInPriceListHeateoasFactory;
 
         @GetMapping
         @HystrixCommand(commandProperties = {@HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE")})

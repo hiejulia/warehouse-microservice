@@ -1,6 +1,5 @@
 package com.project.warehouse.repository;
 
-import com.project.warehouse.model.Price;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

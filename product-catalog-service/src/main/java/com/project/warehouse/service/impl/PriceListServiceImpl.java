@@ -2,7 +2,9 @@ package com.project.warehouse.service.impl;
 
 
 
+import com.project.warehouse.event.model.EventTypeEnum;
 import com.project.warehouse.service.AbstractService;
+import com.project.warehouse.service.PriceService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,14 +14,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PriceListServiceImpl extends AbstractService implements PriceListService {
+public class PriceListServiceImpl extends AbstractService implements PriceService {
 
     @Override
-    public PriceList createPriceList(PriceList priceList) {
+    public Price createPriceList(Price priceList) {
         String correlationId = UUID.randomUUID().toString();
-        priceList.setGoodsInPriceList(Optional.ofNullable(priceList.getGoodsInPriceList()).orElse(new ArrayList<>()));
+        priceList.setProductsInPriceList(Optional.ofNullable(priceList.getGoodsInPriceList()).orElse(new ArrayList<>()));
         priceListDataValidator.validate(correlationId, priceList);
-        PriceList save = doSavePriceListData(correlationId, priceList);
+        Price save = doSavePriceListData(correlationId, priceList);
 
         eventDomainPubblishService.publishPriceListEvent(correlationId,priceList.getId(),
                 priceList.getName(), EventTypeEnum.CREATE);
@@ -27,7 +29,7 @@ public class PriceListServiceImpl extends AbstractService implements PriceListSe
     }
 
     @Override
-    public List<PriceList> findPriceLists(boolean withoutGoodsInPriceList) {
+    public List<Price> findPriceLists(boolean withoutGoodsInPriceList) {
         return withoutGoodsInPriceList ? priceListRepository.findAllWithoutGoodsInPriceList() : priceListRepository.findAll();
     }
 
