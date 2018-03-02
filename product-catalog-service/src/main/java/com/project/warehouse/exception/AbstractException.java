@@ -1,10 +1,14 @@
 package com.project.warehouse.exception;
 
 
+import com.project.warehouse.event.model.AbstractDomainEvent;
 import lombok.Getter;
+
+// AbstractException class
 
 @Getter
 public abstract class AbstractException extends RuntimeException {
+
 
     protected final AbstractDomainEvent event;
 

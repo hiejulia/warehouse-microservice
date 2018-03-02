@@ -6,4 +6,3 @@ spring:
       discovery:
         enabled: true
 
-        
