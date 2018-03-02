@@ -1,0 +1,12 @@
+# Spring config
+spring:
+  application:
+    name: authentacation-server
+  cloud:
+    config:
+      discovery:
+        enabled: true
+
+#management:
+#  security:
+#    enabled: false
