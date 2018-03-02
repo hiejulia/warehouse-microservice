@@ -18,7 +18,7 @@ public class UserRestController {
 
     @GetMapping("/userInfo")
     public Principal userInfo(Principal principal){
-        
+
         return principal;
     }
 }
