@@ -22,7 +22,7 @@ public class SecurityOAuth2ResourceServerConfig extends ResourceServerConfigurer
     public void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable().authorizeRequests()
                 .antMatchers("/products/**","/price-list/**").permitAll()
-                // /products - /price-list 
+                // /products - /price-list
                 .anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
