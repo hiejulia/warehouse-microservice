@@ -6,7 +6,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 
-
+// app 
 @EnableHystrix
 @EnableEurekaClient
 @SpringBootApplication

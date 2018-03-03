@@ -17,3 +17,9 @@ spring:
         git:
 #          uri: file://${GIT_LOCAL_REPO}
            uri: https://github.com/HienNguyen711/warehouse-microservice
+      fail-fast: true
+      retry:
+        initial-interval: 3000
+        multiplier: 1.3
+        max-attempts: 20
+        max-interval: 5000
