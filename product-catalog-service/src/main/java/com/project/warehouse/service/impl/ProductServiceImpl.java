@@ -3,54 +3,48 @@ package com.project.warehouse.service.impl;
 
 
 import com.project.warehouse.event.model.EventTypeEnum;
+import com.project.warehouse.model.PriceList;
 import com.project.warehouse.model.Product;
-import com.project.warehouse.repository.ProductRepository;
 import com.project.warehouse.service.AbstractService;
 import com.project.warehouse.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 @Service
 public class ProductServiceImpl extends AbstractService implements ProductService {
 
-
-    @Autowired
-    private ProductRepository productRepository;
-
     @Override
-    public Product createGoods(Product goods) {
+    public Product createProducts(Product goods) {
         String correlationId = UUID.randomUUID().toString();
         priceListDataValidator.validate(correlationId, goods);
         Product save = doSaveGoodsData(correlationId, goods);
 
-        eventDomainPubblishService.publishProductsEvent(correlationId,goods.getId(), goods.getName(),
+        eventDomainPubblishService.publishGoodsEvent(correlationId,goods.getId(), goods.getName(),
                 goods.getBarCode(), goods.getCategory(), EventTypeEnum.CREATE);
         return save;
     }
 
     @Override
-    public List<Product> findGoodsList() {
+    public List<Product> findProductsList() {
         return productRepository.findAll();
     }
 
     @Override
-    public List<Product> findGoodsList(String goodsCategory) {
+    public List<Product> findProductsList(String goodsCategory) {
         return productRepository.findByCategory(goodsCategory);
     }
 
     @Override
-    public Product findGoods(String idGoods) {
+    public Product findProducts(String idGoods) {
         doCheckGoodsExist(UUID.randomUUID().toString(), idGoods);
         return productRepository.findOne(idGoods);
     }
 
     @Override
-    public Product saveGoodsAttributeValue(String idGoods, String goodsAttributeKey, String goodsAttributeValue) {
+    public Product saveProductsAttributeValue(String idGoods, String goodsAttributeKey, String goodsAttributeValue) {
         String correlationId = UUID.randomUUID().toString();
         doCheckGoodsExist(correlationId, idGoods);
 
@@ -63,7 +57,7 @@ public class ProductServiceImpl extends AbstractService implements ProductServic
     }
 
     @Override
-    public Product removeGoodsAttributeValue(String idGoods, String goodsAttributeKey) {
+    public Product removeProductsAttributeValue(String idGoods, String goodsAttributeKey) {
         String correlationId = UUID.randomUUID().toString();
         doCheckGoodsExist(correlationId, idGoods);
 
@@ -77,7 +71,7 @@ public class ProductServiceImpl extends AbstractService implements ProductServic
     }
 
     @Override
-    public Product updateGoods(Product goods) {
+    public Product updateProducts(Product goods) {
         String correlationId = UUID.randomUUID().toString();
         priceListDataValidator.validate(correlationId, goods);
 
@@ -85,13 +79,13 @@ public class ProductServiceImpl extends AbstractService implements ProductServic
 
         Product save = doSaveGoodsData(correlationId, goods);
 
-        eventDomainPubblishService.publishProductsEvent(correlationId,goods.getId(), goods.getName(),
+        eventDomainPubblishService.publishGoodsEvent(correlationId,goods.getId(), goods.getName(),
                 goods.getBarCode(), goods.getCategory(), EventTypeEnum.UPDATE);
         return save;
     }
 
     @Override
-    public void deleteGoods(String idGoods) {
+    public void deleteProducts(String idGoods) {
         String correlationId = UUID.randomUUID().toString();
 
         doCheckGoodsExist(correlationId, idGoods);
@@ -99,7 +93,29 @@ public class ProductServiceImpl extends AbstractService implements ProductServic
         Product one = productRepository.findOne(idGoods);
         productRepository.delete(idGoods);
 
-        eventDomainPubblishService.publishProductsEvent(correlationId, idGoods, one.getName(),one.getBarCode(),
-                one.getCategory(), EventTypeEnum.DELETE);
+        eventDomainPubblishService.publishGoodsEvent(correlationId, idGoods, one.getName(),one.getBarCode(),
+                one.getCategory(),EventTypeEnum.DELETE);
     }
+
+//    @Override
+//    protected Product doSaveGoodsData(String correlationId, Product goods) {
+//        return super.doSaveGoodsData(correlationId, goods);
+//    }
+//
+//    @Override
+//    protected PriceList doSavePriceListData(String correlationId, PriceList priceList) {
+//        return super.doSavePriceListData(correlationId, priceList);
+//    }
+//
+//    @Override
+//    protected void doCheckGoodsExist(String correlationId, String idGoods) {
+//        super.doCheckGoodsExist(correlationId, idGoods);
+//    }
+//
+//    @Override
+//    protected void doCheckPriceListExist(String correlationId, String idPriceList) {
+//        super.doCheckPriceListExist(correlationId, idPriceList);
+//    }
+
+
 }

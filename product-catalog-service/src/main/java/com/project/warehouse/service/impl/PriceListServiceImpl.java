@@ -8,6 +8,7 @@ import com.project.warehouse.model.PriceList;
 import com.project.warehouse.model.Product;
 import com.project.warehouse.model.ProductsInPriceList;
 import com.project.warehouse.service.AbstractService;
+import com.project.warehouse.service.PriceListService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PriceListServiceImpl extends AbstractService {
+public class PriceListServiceImpl extends AbstractService implements PriceListService {
 
     @Override
     public PriceList createPriceList(PriceList priceList) {
@@ -31,7 +32,7 @@ public class PriceListServiceImpl extends AbstractService {
         return save;
     }
 
-    @Override
+
     public List<PriceList> findPriceLists(boolean withoutGoodsInPriceList) {
         return withoutGoodsInPriceList ? priceListRepository.findAllWithoutProductsInPriceList() : priceListRepository.findAll();
     }

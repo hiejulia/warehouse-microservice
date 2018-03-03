@@ -3,6 +3,7 @@ package com.project.warehouse.hateoas;
 
 
 import com.project.warehouse.model.ProductsInPriceList;
+import com.project.warehouse.rest.PriceListRestController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -18,12 +19,12 @@ public class ProductsInPriceListHateoasFactory {
     public Resource<ProductsInPriceList> toResource(String idPriceList, ProductsInPriceList goodsInPriceList) {
         Resource<ProductsInPriceList> priceListResource = new Resource<>(goodsInPriceList);
 
-        Link selfLink = linkTo(PriceListRestFullEndPoint.class)
+        Link selfLink = linkTo(PriceListRestController.class)
                 .slash(idPriceList).slash("goods")
-                .slash(goodsInPriceList.getGoods().getId())
+                .slash(goodsInPriceList.getProducts().getId())
                 .withSelfRel();
 
-        Link priceListLink = linkTo(PriceListRestFullEndPoint.class)
+        Link priceListLink = linkTo(PriceListRestController.class)
                 .slash(idPriceList).withRel("price-list");
 
         priceListResource.add(selfLink, priceListLink);
@@ -33,11 +34,11 @@ public class ProductsInPriceListHateoasFactory {
     public Resources<ProductsInPriceList> toResources(String idPriceList, List<ProductsInPriceList> goodsInPriceList) {
         Resources<ProductsInPriceList> priceListResource = new Resources<>(goodsInPriceList);
 
-        Link selfLink = linkTo(PriceListRestFullEndPoint.class)
+        Link selfLink = linkTo(PriceListRestController.class)
                 .slash(idPriceList).slash("goods")
                 .withSelfRel();
 
-        Link priceListLink = linkTo(PriceListRestFullEndPoint.class)
+        Link priceListLink = linkTo(PriceListRestController.class)
                 .slash(idPriceList).withRel("price-list");
 
         priceListResource.add(selfLink, priceListLink);

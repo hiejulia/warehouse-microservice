@@ -1,8 +1,9 @@
 package com.project.warehouse.hateoas;
 
 
-import it.valeriovaudi.emarket.endpoint.restfull.PriceListRestFullEndPoint;
-import it.valeriovaudi.emarket.model.PriceList;
+
+import com.project.warehouse.model.PriceList;
+import com.project.warehouse.rest.PriceListRestController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -19,10 +20,10 @@ public class PriceListHateoasFactory {
     public Resource<PriceList> toResource(PriceList priceList) {
         Resource<PriceList> priceListResource = new Resource<>(priceList);
 
-        Link selfLink = linkTo(PriceListRestFullEndPoint.class).slash(priceList.getId())
+        Link selfLink = linkTo(PriceListRestController.class).slash(priceList.getId())
                 .withSelfRel();
 
-        Link goodsInPriceListLink = linkTo(PriceListRestFullEndPoint.class)
+        Link goodsInPriceListLink = linkTo(PriceListRestController.class)
                 .slash(priceList.getId()).slash("goods")
                 .withRel("goods-list-in-price-list");
 
@@ -33,10 +34,10 @@ public class PriceListHateoasFactory {
     public Resources<PriceList> toResources(List<PriceList> priceList) {
         Resources<PriceList> priceListResource = new Resources<>(priceList);
 
-        UriTemplate priceListLinkUriTemplate = new UriTemplate(String.format("%s/{idPriceList}",linkTo(PriceListRestFullEndPoint.class).toString()));
+        UriTemplate priceListLinkUriTemplate = new UriTemplate(String.format("%s/{idPriceList}",linkTo(PriceListRestController.class).toString()));
         Link priceListLink = new Link(priceListLinkUriTemplate, "price-list");
 
-        UriTemplate goodsListInPriceListLinkUriTemplate = new UriTemplate(String.format("%s/{idPriceList}/goods",linkTo(PriceListRestFullEndPoint.class).toString()));
+        UriTemplate goodsListInPriceListLinkUriTemplate = new UriTemplate(String.format("%s/{idPriceList}/goods",linkTo(PriceListRestController.class).toString()));
         Link goodsListInPriceListLink = new Link(goodsListInPriceListLinkUriTemplate, "goods-list-in-price-list");
 
         priceListResource.add(priceListLink,goodsListInPriceListLink);

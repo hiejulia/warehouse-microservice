@@ -20,7 +20,7 @@ import java.util.HashMap;
 @Data
 @RestController
 @RequestMapping("/products")
-public class GoodsRestFullEndPoint {
+public class ProductsRestController {
 
     @Autowired
     private ProductService goodsService;
@@ -45,7 +45,7 @@ public class GoodsRestFullEndPoint {
     @HystrixCommand(commandProperties = {@HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE")})
     public ResponseEntity createGoods(@RequestBody Product goods){
         Product goodsAux = goodsService.createProducts(goods);
-        URI findGoods = MvcUriComponentsBuilder.fromMethodName(GoodsRestFullEndPoint.class,
+        URI findGoods = MvcUriComponentsBuilder.fromMethodName(ProductsRestController.class,
                 "findGoods", goodsAux.getId()).build().toUri();
         return ResponseEntity.created(findGoods).build();
     }
