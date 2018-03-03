@@ -1,27 +1,22 @@
 package com.project.warehouse.service;
 
 
+import com.project.warehouse.event.model.EventTypeEnum;
+import com.project.warehouse.event.model.PriceListErrorEvent;
+import com.project.warehouse.exception.PriceListNotFoundException;
+import com.project.warehouse.exception.ProductsNotFoundException;
+import com.project.warehouse.model.PriceList;
 import com.project.warehouse.model.Product;
+import com.project.warehouse.model.ProductsInPriceList;
+import com.project.warehouse.repository.PriceListRepository;
 import com.project.warehouse.repository.ProductRepository;
+import com.project.warehouse.validator.PriceListDataValidator;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.function.Function;
-import it.valeriovaudi.emarket.event.model.EventTypeEnum;
-import it.valeriovaudi.emarket.event.model.GoodsErrorEvent;
-import it.valeriovaudi.emarket.event.model.PriceListErrorEvent;
-import it.valeriovaudi.emarket.event.service.EventDomainPubblishService;
-import it.valeriovaudi.emarket.exception.GoodsNotFoundException;
-import it.valeriovaudi.emarket.exception.PriceListNotFoundException;
-import it.valeriovaudi.emarket.exception.SaveGoodsException;
-import it.valeriovaudi.emarket.exception.SavePriceListException;
-import it.valeriovaudi.emarket.model.Goods;
-import it.valeriovaudi.emarket.model.GoodsInPriceList;
-import it.valeriovaudi.emarket.model.PriceList;
-import it.valeriovaudi.emarket.repository.GoodsRepository;
-import it.valeriovaudi.emarket.repository.PriceListRepository;
-import it.valeriovaudi.emarket.validator.PriceListDataValidator;
+
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,20 +40,20 @@ public abstract class AbstractService {
     protected ProductRepository productRepository;
 
     protected Function<Product, Map<String, String>> getSafeGoodsAttribute =
-            (goods) -> Optional.ofNullable(goods.getGoodsAttribute()).orElse(new HashMap<>());
+            (goods) -> Optional.ofNullable(goods.getProductsAttribute()).orElse(new HashMap<>());
 
-    protected Function<PriceList, List<GoodsInPriceList>> getSafeGoodsInPriceList =
-            (priceList) -> Optional.ofNullable(priceList.getGoodsInPriceList()).orElse(new ArrayList<>());
+    protected Function<PriceList, List<ProductsInPriceList>> getSafeGoodsInPriceList =
+            (priceList) -> Optional.ofNullable(priceList.getProductsInPriceList()).orElse(new ArrayList<>());
 
 
-    protected Product doSaveGoodsData(String correlationId, Goods goods) {
+    protected Product doSaveGoodsData(String correlationId, Product goods) {
         Product goodsAux;
         GoodsErrorEvent goodsErrorEvent;
         try{
             goodsAux = goodsRepository.save(goods);
 
             eventDomainPubblishService.publishGoodsEvent(correlationId,goods.getId(),
-                    goods.getName(),goods.getBarCode(),goods.getCategory(),EventTypeEnum.SAVE);
+                    goods.getName(),goods.getBarCode(),goods.getCategory(), EventTypeEnum.SAVE);
         } catch (Exception e){
             e.printStackTrace();
             goodsErrorEvent = eventDomainPubblishService.publishGoodsErrorEvent(correlationId, goods.getId(), goods.getName(),goods.getBarCode(),
@@ -87,14 +82,14 @@ public abstract class AbstractService {
 
     protected void doCheckGoodsExist(String correlationId, String idGoods) {
         Product goodsAux;
-        Function<String, GoodsNotFoundException> f = userNameAux -> {
-            GoodsErrorEvent goodsErrorEvent = eventDomainPubblishService.publishGoodsErrorEvent(correlationId, idGoods,
+        Function<String, ProductsNotFoundException> f = userNameAux -> {
+            ProductsErrorEvent goodsErrorEvent = eventDomainPubblishService.publishGoodsErrorEvent(correlationId, idGoods,
                     null, null, null, EventTypeEnum.READ, GoodsNotFoundException.DEFAULT_MESSAGE, GoodsNotFoundException.class);
             return new GoodsNotFoundException(goodsErrorEvent, GoodsNotFoundException.DEFAULT_MESSAGE);
         };
 
         try{
-            goodsAux =  goodsRepository.findOne(idGoods);
+            goodsAux =  productsRepository.findOne(idGoods);
             if(goodsAux== null){
                 throw f.apply(idGoods);
             }
@@ -107,7 +102,7 @@ public abstract class AbstractService {
         PriceList priceListAux;
         Function<String, PriceListNotFoundException> f = userNameAux -> {
             PriceListErrorEvent priceListErrorEvent = eventDomainPubblishService.publishPriceListErrorEvent(correlationId, idPriceList,
-                    null, EventTypeEnum.READ, PriceListNotFoundException.DEFAULT_MESSAGE, GoodsNotFoundException.class);
+                    null, EventTypeEnum.READ, PriceListNotFoundException.DEFAULT_MESSAGE, ProductsNotFoundException.class);
             return new PriceListNotFoundException(priceListErrorEvent, PriceListNotFoundException.DEFAULT_MESSAGE);
         };
 

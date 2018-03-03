@@ -3,8 +3,9 @@ package com.project.warehouse.service.impl;
 
 
 import com.project.warehouse.event.model.EventTypeEnum;
+import com.project.warehouse.model.PriceList;
+import com.project.warehouse.model.Product;
 import com.project.warehouse.service.AbstractService;
-import com.project.warehouse.service.PriceService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,10 +15,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PriceListServiceImpl extends AbstractService implements PriceService {
+public class PriceListServiceImpl extends AbstractService {
 
     @Override
-    public Price createPriceList(Price priceList) {
+    public PriceList createPriceList(PriceList priceList) {
         String correlationId = UUID.randomUUID().toString();
         priceList.setProductsInPriceList(Optional.ofNullable(priceList.getGoodsInPriceList()).orElse(new ArrayList<>()));
         priceListDataValidator.validate(correlationId, priceList);
@@ -29,7 +30,7 @@ public class PriceListServiceImpl extends AbstractService implements PriceServic
     }
 
     @Override
-    public List<Price> findPriceLists(boolean withoutGoodsInPriceList) {
+    public List<PriceList> findPriceLists(boolean withoutGoodsInPriceList) {
         return withoutGoodsInPriceList ? priceListRepository.findAllWithoutGoodsInPriceList() : priceListRepository.findAll();
     }
 
@@ -71,7 +72,7 @@ public class PriceListServiceImpl extends AbstractService implements PriceServic
 
         PriceList priceList = priceListRepository.findOne(idPriceList);
 
-        Goods goods  = goodsRepository.findOne(idGoods);
+        Product goods  = goodsRepository.findOne(idGoods);
         List<GoodsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
 
         GoodsInPriceList goodsInPriceList = new GoodsInPriceList();
@@ -101,7 +102,7 @@ public class PriceListServiceImpl extends AbstractService implements PriceServic
         doCheckGoodsExist(correlationId, idGoods);
 
         PriceList priceList = priceListRepository.findOne(idPriceList);
-        Goods goods  = goodsRepository.findOne(idGoods);
+        Product goods  = goodsRepository.findOne(idGoods);
 
         List<GoodsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
 
