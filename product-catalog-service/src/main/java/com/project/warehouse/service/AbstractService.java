@@ -3,8 +3,12 @@ package com.project.warehouse.service;
 
 import com.project.warehouse.event.model.EventTypeEnum;
 import com.project.warehouse.event.model.PriceListErrorEvent;
+import com.project.warehouse.event.model.ProductsErrorEvent;
+import com.project.warehouse.event.service.EventDomainPubblishService;
 import com.project.warehouse.exception.PriceListNotFoundException;
 import com.project.warehouse.exception.ProductsNotFoundException;
+import com.project.warehouse.exception.SavePriceListException;
+import com.project.warehouse.exception.SaveProductsException;
 import com.project.warehouse.model.PriceList;
 import com.project.warehouse.model.Product;
 import com.project.warehouse.model.ProductsInPriceList;
@@ -48,17 +52,17 @@ public abstract class AbstractService {
 
     protected Product doSaveGoodsData(String correlationId, Product goods) {
         Product goodsAux;
-        GoodsErrorEvent goodsErrorEvent;
+        ProductsErrorEvent goodsErrorEvent;
         try{
-            goodsAux = goodsRepository.save(goods);
+            goodsAux = productRepository.save(goods);
 
             eventDomainPubblishService.publishGoodsEvent(correlationId,goods.getId(),
                     goods.getName(),goods.getBarCode(),goods.getCategory(), EventTypeEnum.SAVE);
         } catch (Exception e){
             e.printStackTrace();
             goodsErrorEvent = eventDomainPubblishService.publishGoodsErrorEvent(correlationId, goods.getId(), goods.getName(),goods.getBarCode(),
-                    goods.getCategory(), EventTypeEnum.SAVE, SaveGoodsException.DEFAULT_MESSAGE, SaveGoodsException.class);
-            throw  new SaveGoodsException(goodsErrorEvent, SaveGoodsException.DEFAULT_MESSAGE);
+                    goods.getCategory(), EventTypeEnum.SAVE, SaveProductsException.DEFAULT_MESSAGE, SaveProductsException.class);
+            throw  new SaveProductsException(goodsErrorEvent, SaveProductsException.DEFAULT_MESSAGE);
         }
 
         return goodsAux;
@@ -84,12 +88,12 @@ public abstract class AbstractService {
         Product goodsAux;
         Function<String, ProductsNotFoundException> f = userNameAux -> {
             ProductsErrorEvent goodsErrorEvent = eventDomainPubblishService.publishGoodsErrorEvent(correlationId, idGoods,
-                    null, null, null, EventTypeEnum.READ, GoodsNotFoundException.DEFAULT_MESSAGE, GoodsNotFoundException.class);
-            return new GoodsNotFoundException(goodsErrorEvent, GoodsNotFoundException.DEFAULT_MESSAGE);
+                    null, null, null, EventTypeEnum.READ, ProductsNotFoundException.DEFAULT_MESSAGE, ProductsNotFoundException.class);
+            return new ProductsNotFoundException(goodsErrorEvent, ProductsNotFoundException.DEFAULT_MESSAGE);
         };
 
         try{
-            goodsAux =  productsRepository.findOne(idGoods);
+            goodsAux =  productRepository.findOne(idGoods);
             if(goodsAux== null){
                 throw f.apply(idGoods);
             }

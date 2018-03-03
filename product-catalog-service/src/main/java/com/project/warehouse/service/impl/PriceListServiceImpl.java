@@ -3,8 +3,10 @@ package com.project.warehouse.service.impl;
 
 
 import com.project.warehouse.event.model.EventTypeEnum;
+import com.project.warehouse.exception.ProductsInPriceListNotFoundException;
 import com.project.warehouse.model.PriceList;
 import com.project.warehouse.model.Product;
+import com.project.warehouse.model.ProductsInPriceList;
 import com.project.warehouse.service.AbstractService;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,9 @@ public class PriceListServiceImpl extends AbstractService {
     @Override
     public PriceList createPriceList(PriceList priceList) {
         String correlationId = UUID.randomUUID().toString();
-        priceList.setProductsInPriceList(Optional.ofNullable(priceList.getGoodsInPriceList()).orElse(new ArrayList<>()));
+        priceList.setProductsInPriceList(Optional.ofNullable(priceList.getProductsInPriceList()).orElse(new ArrayList<>()));
         priceListDataValidator.validate(correlationId, priceList);
-        Price save = doSavePriceListData(correlationId, priceList);
+        PriceList save = doSavePriceListData(correlationId, priceList);
 
         eventDomainPubblishService.publishPriceListEvent(correlationId,priceList.getId(),
                 priceList.getName(), EventTypeEnum.CREATE);
@@ -31,7 +33,7 @@ public class PriceListServiceImpl extends AbstractService {
 
     @Override
     public List<PriceList> findPriceLists(boolean withoutGoodsInPriceList) {
-        return withoutGoodsInPriceList ? priceListRepository.findAllWithoutGoodsInPriceList() : priceListRepository.findAll();
+        return withoutGoodsInPriceList ? priceListRepository.findAllWithoutProductsInPriceList() : priceListRepository.findAll();
     }
 
     @Override
@@ -41,7 +43,7 @@ public class PriceListServiceImpl extends AbstractService {
     }
 
     @Override
-    public List<GoodsInPriceList> findGoodsListInPriceList(String idPriceList) {
+    public List<ProductsInPriceList> findGoodsListInPriceList(String idPriceList) {
         String correlationId = UUID.randomUUID().toString();
         doCheckPriceListExist(correlationId, idPriceList);
 
@@ -49,17 +51,17 @@ public class PriceListServiceImpl extends AbstractService {
     }
 
     @Override
-    public GoodsInPriceList findGoodsInPriceList(String idPriceList, String idGoods) {
+    public ProductsInPriceList findGoodsInPriceList(String idPriceList, String idGoods) {
         String correlationId = UUID.randomUUID().toString();
         doCheckPriceListExist(correlationId, idPriceList);
         doCheckGoodsExist(correlationId, idGoods);
 
-        GoodsInPriceList goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceListRepository.findOne(idPriceList)).
-                stream().filter(goodsInPriceList -> goodsInPriceList.getGoods().getId().equals(idGoods))
+        ProductsInPriceList goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceListRepository.findOne(idPriceList)).
+                stream().filter(goodsInPriceList -> goodsInPriceList.getProducts().getId().equals(idGoods))
                 .findFirst().orElse(null);
 
         if(goodsInPriceListAux == null){
-            throw new GoodsInPriceListNotFoundException(GoodsInPriceListNotFoundException.DEFAULT_MESSAGE);
+            throw new ProductsInPriceListNotFoundException(ProductsInPriceListNotFoundException.DEFAULT_MESSAGE);
         }
         return goodsInPriceListAux;
     }
@@ -72,11 +74,11 @@ public class PriceListServiceImpl extends AbstractService {
 
         PriceList priceList = priceListRepository.findOne(idPriceList);
 
-        Product goods  = goodsRepository.findOne(idGoods);
-        List<GoodsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
+        Product goods  = productRepository.findOne(idGoods);
+        List<ProductsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
 
-        GoodsInPriceList goodsInPriceList = new GoodsInPriceList();
-        goodsInPriceList.setGoods(goods);
+        ProductsInPriceList goodsInPriceList = new ProductsInPriceList();
+        goodsInPriceList.setProducts(goods);
         goodsInPriceList.setPrice(price);
 
         int index = goodsInPriceListAux.indexOf(goodsInPriceList);
@@ -102,12 +104,12 @@ public class PriceListServiceImpl extends AbstractService {
         doCheckGoodsExist(correlationId, idGoods);
 
         PriceList priceList = priceListRepository.findOne(idPriceList);
-        Product goods  = goodsRepository.findOne(idGoods);
+        Product goods  = productRepository.findOne(idGoods);
 
-        List<GoodsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
+        List<ProductsInPriceList> goodsInPriceListAux = getSafeGoodsInPriceList.apply(priceList);
 
-        GoodsInPriceList goodsInPriceList = new GoodsInPriceList();
-        goodsInPriceList.setGoods(goods);
+        ProductsInPriceList goodsInPriceList = new ProductsInPriceList();
+        goodsInPriceList.setProducts(goods);
         goodsInPriceListAux.remove(goodsInPriceList);
 
         PriceList priceListAux = doSavePriceListData(correlationId, priceList);
